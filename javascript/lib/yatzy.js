@@ -13,12 +13,33 @@ class Yatzy {
     return sum;
   }
 
-  static uniqDice(dice) {
+  static uniqFaces(dice) {
     return (
       dice.filter((elem, index, self) => {
         return index === self.indexOf(elem);
-      }).length
+      })
     )
+  }
+
+  static faceCounts(dice) {
+    var counts = {};
+    var count = 0;
+    this.uniqFaces(dice).forEach((e1) => {
+      count = 0
+      dice.forEach((e2) => {
+        if (e1 === e2) {
+          count++
+        }
+      });
+
+      if(counts[count] === undefined) {
+        counts[count] = [e1];
+      } else {
+        counts[count].push(e1);
+      }
+    });
+
+    return counts
   }
 
   static chance(d1, d2, d3, d4, d5) {
@@ -44,7 +65,7 @@ class Yatzy {
   static yatzy() {
     var dice = Array.prototype.slice.call(arguments);
 
-    if (this.uniqDice(dice) > 1) {
+    if (this.uniqFaces(dice).length > 1) {
       return 0;
     } else {
       return 50;
@@ -53,8 +74,9 @@ class Yatzy {
 
   static fullHouse() {
     var dice = Array.prototype.slice.call(arguments);
+    var counts = Object.keys(this.faceCounts(dice)).sort();
 
-    if (this.uniqDice(dice) == 2) {
+    if (this.arraysAreEqual(counts, ['2', '3'])) {
       return 18;
     } else {
       return 0;
@@ -81,6 +103,39 @@ class Yatzy {
     return this.straight(dice, expected, 20);
   }
 
+  static score_pair() {
+    var dice = Array.prototype.slice.call(arguments);
+    return this.scoreParis(dice, 1);
+  }
+
+  static two_pair() {
+    var dice = Array.prototype.slice.call(arguments);
+    return this.scoreParis(dice, 2);
+  }
+
+  static three_of_a_kind() {
+    var dice = Array.prototype.slice.call(arguments);
+    var counts = this.faceCounts(dice);
+    var matches = (counts[3] || []).concat(counts[4] || []).concat(counts[5] || []);
+    return matches.sort().reverse()[0] * 3
+  }
+
+  static four_of_a_kind() {
+    var dice = Array.prototype.slice.call(arguments);
+    var counts = this.faceCounts(dice);
+    var matches = (counts[4] || []).concat(counts[5] || []);
+    return matches.sort().reverse()[0] * 4
+  }
+
+  static scoreParis(dice, numPairs) {
+    var counts = this.faceCounts(dice)
+    var dubs = counts[2] || [];
+    var trips = counts[3] || [];
+    var pairs = dubs.concat(trips).sort().reverse();
+
+    return pairs.slice(0, numPairs).map((n) => n * 2).reduce((sum, n) => sum + n);
+  }
+
   static arraysAreEqual(a, b) {
     return (
       a.every((elem, index) => {
@@ -93,90 +148,6 @@ class Yatzy {
   fives() { return this.constructor.sumFaces(this.dice, 5) }
   sixes() { return this.constructor.sumFaces(this.dice, 6) }
 
-}
-
-Yatzy.score_pair = function(d1, d2, d3, d4, d5)
-{
-    var counts = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-    counts[d1-1]++;
-    counts[d2-1]++;
-    counts[d3-1]++;
-    counts[d4-1]++;
-    counts[d5-1]++;
-    var at;
-    for (at = 0; at != 6; at++)
-        if (counts[6-at-1] >= 2)
-            return (6-at)*2;
-    return 0;
-}
-
-Yatzy.two_pair = function(d1, d2, d3, d4, d5)
-{
-    var counts = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-    counts[d1-1]++;
-    counts[d2-1]++
-    counts[d3-1]++
-    counts[d4-1]++;
-    counts[d5-1]++;
-    var n = 0;
-    var score = 0;
-    for (i = 0; i < 6; i += 1)
-        if (counts[6-i-1] >= 2) {
-            n++;
-            score += (6-i);
-        }
-    if (n == 2)
-        return score * 2;
-    else
-        return 0;
-}
-
-Yatzy.four_of_a_kind = function(_1, _2, d3, d4, d5)
-{
-    var tallies;
-    tallies = [0, 0, 0, 0, 0, 0, 0, 0]
-    tallies[_1-1]++;
-    tallies[_2-1]++;
-    tallies[d3-1]++;
-    tallies[d4-1]++;
-    tallies[d5-1]++;
-    for (i = 0; i < 6; i++)
-        if (tallies[i] >= 4)
-            return (i+1) * 4;
-    return 0;
-}
-
-Yatzy.three_of_a_kind = function(d1, d2, d3, d4, d5)
-{
-    var t;
-    t = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-    t[d1-1]++;
-    t[d2-1]++;
-    t[d3-1]++;
-    t[d4-1]++;
-    t[d5-1]++;
-    for (i = 0; i < 6; i++)
-        if (t[i] >= 3)
-            return (i+1) * 3;
-    return 0;
-}
-
-Yatzy.largeStraight = function(d1, d2, d3, d4, d5)
-{
-    var tallies;
-    tallies = [0, 0, 0, 0,0,0,0,0];
-    tallies[d1-1] += 1;
-    tallies[d2-1] += 1;
-    tallies[d3-1] += 1;
-    tallies[d4-1] += 1;
-    tallies[d5-1] += 1;
-    if (tallies[1] == 1 &&
-        tallies[2] == 1 &&
-        tallies[3] == 1 &&
-        tallies[4] == 1
-        && tallies[5] == 1)
-        return 20;
-    return 0;
 }
 
 module.exports = Yatzy;
