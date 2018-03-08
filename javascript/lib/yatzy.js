@@ -36,17 +36,19 @@ class Yatzy {
   fours() { return this.constructor.sumFaces(this.dice, 4) }
   fives() { return this.constructor.sumFaces(this.dice, 5) }
   sixes() { return this.constructor.sumFaces(this.dice, 6) }
-}
 
-Yatzy.yatzy = function() {
-    var counts = [0, 0, 0, 0, 0, 0, 0, 0];
-    for (var i = 0; i != arguments.length; ++i) {
-    var die = arguments[i];
-    counts[die-1]++; }
-    for (i = 0; i != 6; i++)
-        if (counts[i] == 5)
-            return 50;
-    return 0;
+  static yatzy() {
+    var dice = Array.prototype.slice.call(arguments);
+    var filtered = dice.filter((elem, index, self) => {
+      return index === self.indexOf(elem);
+    });
+
+    if (filtered.length > 1) {
+      return 0;
+    } else {
+      return 50;
+    }
+  }
 }
 
 Yatzy.score_pair = function(d1, d2, d3, d4, d5)
