@@ -105,35 +105,41 @@ class Yatzy {
 
   static score_pair() {
     var dice = Array.prototype.slice.call(arguments);
-    return this.scoreParis(dice, 1);
+    return this.ofAKind(2, dice)
   }
 
   static two_pair() {
     var dice = Array.prototype.slice.call(arguments);
-    return this.scoreParis(dice, 2);
+    return this.ofAKind(2, dice, 2)
   }
 
   static three_of_a_kind() {
     var dice = Array.prototype.slice.call(arguments);
-    var counts = this.faceCounts(dice);
-    var matches = (counts[3] || []).concat(counts[4] || []).concat(counts[5] || []);
-    return matches.sort().reverse()[0] * 3
+    return this.ofAKind(3, dice)
   }
 
   static four_of_a_kind() {
     var dice = Array.prototype.slice.call(arguments);
-    var counts = this.faceCounts(dice);
-    var matches = (counts[4] || []).concat(counts[5] || []);
-    return matches.sort().reverse()[0] * 4
+    return this.ofAKind(4, dice)
   }
 
-  static scoreParis(dice, numPairs) {
-    var counts = this.faceCounts(dice)
-    var dubs = counts[2] || [];
-    var trips = counts[3] || [];
-    var pairs = dubs.concat(trips).sort().reverse();
+  static ofAKind(numKind, dice, numSets=1) {
+    var counts = this.faceCounts(dice);
+    var matches = [];
 
-    return pairs.slice(0, numPairs).map((n) => n * 2).reduce((sum, n) => sum + n);
+    for (var i = numKind; i < 6; i++) {
+      if (counts[i] === undefined) { continue }
+      matches = matches.concat(counts[i]);
+    }
+
+    return (
+      matches
+        .sort()
+        .reverse()
+        .slice(0, numSets)
+        .map((n) => n * numKind)
+        .reduce((sum, n) => sum + n)
+    )
   }
 
   static arraysAreEqual(a, b) {
