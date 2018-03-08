@@ -1,19 +1,36 @@
-var Yatzy = function(d1, d2, d3, d4, _5) {
-  this.dice = Array.prototype.slice.call(arguments);
+class Yatzy {
+  constructor(d1, d2, d3, d4, d5) {
+    this.dice = Array.prototype.slice.call(arguments);
+  }
 
-  this.sumFaces = function(faceNumber) {
+  static sumFaces(dice, faceNumber) {
     var sum = 0;
     for (var i = 0; i < 5; i++) {
-      if (this.dice[i] == faceNumber) {
+      if (dice[i] == faceNumber) {
         sum += faceNumber;
       }
     }
     return sum;
   }
 
-  this.fours = function() { return this.sumFaces(4) }
-  this.fives = function() { return this.sumFaces(5) }
-  this.sixes = function() { return this.sumFaces(6) }
+  static ones(d1, d2, d3, d4, d5) {
+    var dice = Array.prototype.slice.call(arguments);
+    return this.sumFaces(dice, 1);
+  }
+
+  static twos(d1, d2, d3, d4, d5) {
+    var dice = Array.prototype.slice.call(arguments);
+    return this.sumFaces(dice, 2);
+  }
+
+  static threes(d1, d2, d3, d4, d5) {
+    var dice = Array.prototype.slice.call(arguments);
+    return this.sumFaces(dice, 3);
+  }
+
+  fours() { return this.constructor.sumFaces(this.dice, 4) }
+  fives() { return this.constructor.sumFaces(this.dice, 5) }
+  sixes() { return this.constructor.sumFaces(this.dice, 6) }
 }
 
 
@@ -37,39 +54,6 @@ Yatzy.yatzy = function() {
         if (counts[i] == 5)
             return 50;
     return 0;
-}
-
-Yatzy.ones = function(d1, d2, d3, d4, d5) {
-    var sum = 0;
-    if (d1 == 1) sum++;
-    if (d2 == 1) sum++;
-    if (d3 == 1) sum++;
-    if (d4 == 1) sum++;
-    if (d5 == 1)
-        sum++;
-
-    return sum;
-}
-
-Yatzy.twos = function(d1, d2, d3, d4, d5) {
-    var sum = 0;
-    if (d1 == 2) sum += 2;
-    if (d2 == 2) sum += 2;
-    if (d3 == 2) sum += 2;
-    if (d4 == 2) sum += 2;
-    if (d5 == 2) sum += 2;
-    return sum;
-}
-
-Yatzy.threes = function(d1, d2, d3, d4, d5) {
-    var s;
-    s = 0;
-    if (d1 == 3) s += 3;
-    if (d2 == 3) s += 3;
-    if (d3 == 3) s += 3;
-    if (d4 == 3) s += 3;
-    if (d5 == 3) s += 3;
-    return s;
 }
 
 Yatzy.score_pair = function(d1, d2, d3, d4, d5)
