@@ -61,6 +61,34 @@ class Yatzy {
     }
   }
 
+  static straight(dice, expected, score) {
+    if (this.arraysAreEqual(dice.sort(), expected)) {
+      return score;
+    } else {
+      return 0;
+    }
+  }
+
+  static smallStraight() {
+    var dice = Array.prototype.slice.call(arguments);
+    var expected = [1, 2, 3, 4, 5];
+    return this.straight(dice, expected, 15);
+  }
+
+  static largeStraight() {
+    var dice = Array.prototype.slice.call(arguments);
+    var expected = [2, 3, 4, 5, 6];
+    return this.straight(dice, expected, 20);
+  }
+
+  static arraysAreEqual(a, b) {
+    return (
+      a.every((elem, index) => {
+        return elem == b[index]
+      })
+    )
+  }
+
   fours() { return this.constructor.sumFaces(this.dice, 4) }
   fives() { return this.constructor.sumFaces(this.dice, 5) }
   sixes() { return this.constructor.sumFaces(this.dice, 6) }
@@ -133,24 +161,6 @@ Yatzy.three_of_a_kind = function(d1, d2, d3, d4, d5)
     return 0;
 }
 
-Yatzy.smallStraight = function(d1, d2, d3, d4, d5)
-{
-    var tallies;
-    tallies = [0, 0, 0, 0, 0, 0, 0]
-    tallies[d1-1] += 1;
-    tallies[d2-1] += 1;
-    tallies[d3-1] += 1;
-    tallies[d4-1] += 1;
-    tallies[d5-1] += 1;
-    if (tallies[0] == 1 &&
-        tallies[1] == 1 &&
-        tallies[2] == 1 &&
-        tallies[3] == 1 &&
-        tallies[4] == 1)
-        return 15;
-    return 0;
-}
-
 Yatzy.largeStraight = function(d1, d2, d3, d4, d5)
 {
     var tallies;
@@ -169,43 +179,4 @@ Yatzy.largeStraight = function(d1, d2, d3, d4, d5)
     return 0;
 }
 
-Yatzy.fullHouse = function(d1, d2, d3, d4, d5)
-{
-    var tallies;
-    var  _2 = false;
-    var i;
-    var _2_at = 0;
-    var _3 = false;
-    var _3_at = 0;
-
-
-
-
-    tallies = [0, 0, 0, 0, 0, 0, 0, 0];
-    tallies[d1-1] += 1;
-    tallies[d2-1] += 1;
-    tallies[d3-1] += 1;
-    tallies[d4-1] += 1;
-    tallies[d5-1] += 1;
-
-    for (i = 0; i != 6; i += 1)
-        if (tallies[i] == 2) {
-            _2 = true;
-            _2_at = i+1;
-        }
-
-    for (i = 0; i != 6; i += 1)
-        if (tallies[i] == 3) {
-            _3 = true;
-            _3_at = i+1;
-        }
-
-    if (_2 && _3)
-        return _2_at * 2 + _3_at * 3;
-    else
-        return 0;
-}
-
 module.exports = Yatzy;
-
-
