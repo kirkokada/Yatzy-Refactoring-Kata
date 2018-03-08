@@ -13,6 +13,14 @@ class Yatzy {
     return sum;
   }
 
+  static uniqDice(dice) {
+    return (
+      dice.filter((elem, index, self) => {
+        return index === self.indexOf(elem);
+      }).length
+    )
+  }
+
   static chance(d1, d2, d3, d4, d5) {
     var dice = Array.prototype.slice.call(arguments);
     return dice.reduce((sum, n) => sum + n, 0)
@@ -33,22 +41,30 @@ class Yatzy {
     return this.sumFaces(dice, 3);
   }
 
-  fours() { return this.constructor.sumFaces(this.dice, 4) }
-  fives() { return this.constructor.sumFaces(this.dice, 5) }
-  sixes() { return this.constructor.sumFaces(this.dice, 6) }
-
   static yatzy() {
     var dice = Array.prototype.slice.call(arguments);
-    var filtered = dice.filter((elem, index, self) => {
-      return index === self.indexOf(elem);
-    });
 
-    if (filtered.length > 1) {
+    if (this.uniqDice(dice) > 1) {
       return 0;
     } else {
       return 50;
     }
   }
+
+  static fullHouse() {
+    var dice = Array.prototype.slice.call(arguments);
+
+    if (this.uniqDice(dice) == 2) {
+      return 18;
+    } else {
+      return 0;
+    }
+  }
+
+  fours() { return this.constructor.sumFaces(this.dice, 4) }
+  fives() { return this.constructor.sumFaces(this.dice, 5) }
+  sixes() { return this.constructor.sumFaces(this.dice, 6) }
+
 }
 
 Yatzy.score_pair = function(d1, d2, d3, d4, d5)
