@@ -13,6 +13,11 @@ class Yatzy {
     return sum;
   }
 
+  static chance(d1, d2, d3, d4, d5) {
+    var dice = Array.prototype.slice.call(arguments);
+    return dice.reduce((sum, n) => sum + n, 0)
+  }
+
   static ones(d1, d2, d3, d4, d5) {
     var dice = Array.prototype.slice.call(arguments);
     return this.sumFaces(dice, 1);
@@ -31,18 +36,6 @@ class Yatzy {
   fours() { return this.constructor.sumFaces(this.dice, 4) }
   fives() { return this.constructor.sumFaces(this.dice, 5) }
   sixes() { return this.constructor.sumFaces(this.dice, 6) }
-}
-
-
-
-Yatzy.chance = function(d1, d2, d3, d4, d5) {
-    var total = 0;
-    total += d1;
-    total += d2;
-    total += d3;
-    total += d4;
-    total += d5;
-    return total;
 }
 
 Yatzy.yatzy = function() {
